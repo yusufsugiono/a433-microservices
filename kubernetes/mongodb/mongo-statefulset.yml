@@ -88,4 +88,4 @@ spec:
       # Volume untuk mongo-data dari PVC mongo-pvc
       - name: mongo-data
         persistentVolumeClaim:
-          claimName: mongo-pvc
+          claimName: mongo-pv-claim
