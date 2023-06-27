@@ -1,0 +1,19 @@
+# Menggunakan versi API v1
+apiVersion: v1
+
+# Membuat ConfigMap untuk menyimpan data config
+kind: ConfigMap
+
+# Memberi nama pada ConfigMap yaitu mongo-config
+metadata:
+  name: mongo-config
+
+
+data:
+
+  # Data dalam ConfigMap dengan key "mongo.conf"
+  mongo.conf: |
+    # Konfigurasi storage
+    storage:
+      # Path tempat penyimpanan database MongoDB pada /data/db
+      dbPath: /data/db

@@ -1,0 +1,44 @@
+# Menggunakan versi API apps/v1
+apiVersion: apps/v1
+
+# Membuat Deployment
+kind: Deployment
+
+# Memberikan nama pada Deployment: karsajobs-fe
+metadata:
+  name: karsajobs-fe
+
+spec:
+
+  # Jumlah replika
+  replicas: 1
+
+  # Selector untuk label app: frontend
+  selector:
+    matchLabels:
+      app: frontend
+
+
+  template:
+    metadata:
+    
+      # Memberikan label app:frontend
+      labels:
+        app: frontend
+
+
+    spec:
+      containers:
+
+      # Memberikan nama container: karsajobs-ui
+      - name: karsajobs-ui
+        
+        # Mengambil image dari GitHub Packages
+        image: ghcr.io/yusufsugiono/karsajobs-ui:latest
+
+        # Menerapkan policy agar hanya mengunduh saat tidak tersedia di lokal
+        imagePullPolicy: IfNotPresent
+
+        # Mengekspos port 8000
+        ports:
+        - containerPort: 8000

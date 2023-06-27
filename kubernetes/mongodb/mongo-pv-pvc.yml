@@ -1,0 +1,45 @@
+# Menggunakan versi API v1
+apiVersion: v1
+
+# Membuat Persistent Volume
+kind: PersistentVolume
+
+metadata:
+  # Memberikan nama pada PV
+  name: mongo-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+
+  # Kapasitas yang akan digunakan pada PV
+  capacity:
+    storage: 20Gi
+
+  # Mode akses yang digunakan PV
+  accessModes:
+    - ReadWriteOnce
+
+  # Alamat host yang digunakan oleh PV
+  hostPath:
+    path: "/mnt/data"
+---
+apiVersion: v1
+
+# Membuat PersistentVolumeClaim
+kind: PersistentVolumeClaim
+
+# Memberikan nama pada PVC yaitu mongo-pv-claim
+metadata:
+  name: mongo-pv-claim
+spec:
+  storageClassName: manual
+
+  # Mode akses yang digunakan PVC
+  accessModes:
+    - ReadWriteOnce
+
+  # Request kapasitas penyimpanan untuk PVC
+  resources:
+    requests:
+      storage: 20Gi

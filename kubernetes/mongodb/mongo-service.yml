@@ -1,0 +1,24 @@
+# Menggunakan versi API v1
+apiVersion: v1
+
+# Membuat Service
+kind: Service
+
+metadata:
+
+  # Memberi nama pada Service: mongo-service
+  name: mongo-service
+
+  # Memberi label app: database pada Service
+  labels:
+    app: database
+
+spec:
+
+  # Mengekspos port yang akan digunakan
+  ports:
+  - port: 27017
+
+  # Menggunakan selector Pod dengan label "app: database"
+  selector:
+    app: database

@@ -1,0 +1,27 @@
+# Menggunakan versi API v1
+apiVersion: v1
+
+# Membuat Service
+kind: Service
+metadata:
+  
+  # Memberikan label app: frontend
+  labels:
+    app: frontend
+
+  # Memberikan nama pada service: karsajobs-ui-service
+  name: karsajobs-ui-service
+
+
+spec:
+
+  # Menggunakan jenis NodePort
+  type: NodePort
+  
+  # Mengekspos port yang digunakan service
+  ports:
+  - port: 8000
+
+  # Selector untuk label app: frontend
+  selector:
+    app: frontend

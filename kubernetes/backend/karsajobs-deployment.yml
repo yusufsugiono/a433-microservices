@@ -1,0 +1,71 @@
+# Menggunakan versi API apps/v1
+apiVersion: apps/v1
+
+# Membuat Deployment
+kind: Deployment
+
+# Memberikan nama pada Deployment : karsajobs
+metadata:
+  name: karsajobs
+
+spec:
+
+  # Jumlah replika yang digunakan
+  replicas: 1
+
+  # Selector untuk label app: backend
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+
+      # Memberikan label app: backend
+      labels:
+        app: backend
+
+    spec:
+      containers:
+
+      # Memberikan nama untuk container karsajobs
+      - name: karsajobs
+        
+        # Image yang digunakan dari GitHub Packages
+        image: ghcr.io/yusufsugiono/karsajobs:latest
+
+        # Menerapkan policy agar hanya mengunduh saat tidak tersedia di lokal
+        imagePullPolicy: IfNotPresent
+
+        # Mengekspos port 8000
+        ports:
+        - containerPort: 8080
+
+        # Mendefinisikan environment variable
+        env:
+
+          # Membuat env APP_PORT
+          - name: APP_PORT
+            value: "8080"
+
+          # Membuat env MONGO_HOST
+          - name: MONGO_HOST
+            value: mongo-service
+
+          # Membuat env MONGO_USER
+          - name: MONGO_USER
+
+            # Ambil valuenya dari secret mongo-credential
+            valueFrom:
+              secretKeyRef:
+                name: mongo-credentials
+                key: MONGO_ROOT_USERNAME
+
+          # Membuat env MONGO_PASS  
+          - name: MONGO_PASS
+
+            # Ambil valuenya dari secret mongo-credential
+            valueFrom:
+              secretKeyRef:
+                name: mongo-credentials
+                key: MONGO_ROOT_PASSWORD

@@ -1,0 +1,91 @@
+# Menggunakan versi API v1
+apiVersion: apps/v1
+
+# Membuat StatefulSet
+kind: StatefulSet
+
+# Memberi nama pada StatefulSet : mongodb
+metadata:
+  name: mongodb
+
+spec:
+
+  # Service yang digunakan: mongo-service
+  serviceName: mongo-service
+
+  # Jumlah replica
+  replicas: 1
+
+  # Mendefinisikan selector untuk pod berlabel app: database
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+        selector: mongodb
+
+
+    spec:
+      containers:
+
+      # Mendefinisikan nama container
+      - name: mongodb
+
+        # Menggunakan Dcoker image mongo:3 untuk containernya
+        image: mongo:3
+
+        # Mengekspos port 27017 yang akan digunakan
+        ports:
+        - containerPort: 27017  # Port yang akan diexpose oleh container
+
+        # Mendefinisikan environment variabel dari mongo-credentials
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME_FILE
+            value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+          - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+            value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+
+        # Mengatur volume mounts
+        volumeMounts:
+
+        # Mount mongo-config ke path /config
+        - name: mongo-config
+          mountPath: /config
+
+        # Mount mongo-credentials ke path /etc/mongo-credentials
+        - name: mongo-credentials
+          mountPath: /etc/mongo-credentials
+
+        # Mount volume mongo-data ke path /data/db
+        - name: mongo-data 
+          mountPath: /data/db
+
+      # Mengatur volume
+      volumes:
+
+      # Volume untuk konfigurasi mongo-config
+      - name: mongo-config
+        configMap:
+          name: mongo-config
+          items:
+          - key: mongo.conf
+            path: mongo.conf
+      
+      # Volume untuk mongo-credentials
+      - name: mongo-credentials
+        secret:
+          secretName: mongo-credentials
+          items:
+          
+          - key: MONGO_ROOT_USERNAME
+            path: MONGO_ROOT_USERNAME
+
+          - key: MONGO_ROOT_PASSWORD
+            path: MONGO_ROOT_PASSWORD
+
+      # Volume untuk mongo-data dari PVC mongo-pvc
+      - name: mongo-data
+        persistentVolumeClaim:
+          claimName: mongo-pvc
