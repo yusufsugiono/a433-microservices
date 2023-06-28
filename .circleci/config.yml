@@ -36,8 +36,8 @@ jobs:
 workflows:
   karsajobs:
     jobs:
-      - lint-dockerfile
-	  filters:
-            branches:
-              only:
-                - karsajobs
+      - lint-dockerfile:
+        filters:
+          branches:
+            only:
+              - karsajobs
