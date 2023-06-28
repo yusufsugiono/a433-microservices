@@ -7,5 +7,8 @@ kubectl apply -f backend/karsajobs-service.yml -f backend/karsajobs-deployment.y
 # FRONTEND
 kubectl apply -f frontend/karsajobs-ui-service.yml -f frontend/karsajobs-ui-deployment.yml
 
+# Jeda 30 detik
+sleep 30
+
 # Cek semua objek pada namespace default
 kubectl get all -n default

@@ -36,8 +36,8 @@ spec:
         # Mengambil image dari GitHub Packages
         image: ghcr.io/yusufsugiono/karsajobs-ui:latest
 
-        # Menerapkan policy agar hanya mengunduh saat tidak tersedia di lokal
-        imagePullPolicy: IfNotPresent
+        # Menerapkan policy agar selalu mengunduh image versi terbaru
+        imagePullPolicy: Always
 
         # Mengekspos port 8000
         ports:

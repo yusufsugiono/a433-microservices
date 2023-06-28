@@ -22,7 +22,7 @@ spec:
 
   # Alamat host yang digunakan oleh PV
   hostPath:
-    path: "/mnt/data"
+    path: "/var/lib/data"
 ---
 apiVersion: v1
 
