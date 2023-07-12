@@ -1,0 +1,5 @@
+order-service:
+https://github.com/users/yusufsugiono/packages/container/package/order-service
+
+shipping-service:
+https://github.com/users/yusufsugiono/packages/container/package/shipping-service
