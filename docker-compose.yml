@@ -1,0 +1,86 @@
+# Versi Docker Compose yang digunakan
+version: "3.2"
+
+
+services:
+
+  # Membuat service rabbitmq
+  rabbitmq:
+
+    # Menggunakan image rabbitmq:3.8-management-alpine
+    image: rabbitmq:3.8-management-alpine
+    container_name: "rabbitmq_submission_container"
+
+    # Mengekspos port yang akan digunakan
+    ports:
+      - 5672:5672
+      - 15673:15672
+
+    # Mengatur volume yang akan digunakan oleh container
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+    # Network yang akan digunakan oleh container
+    networks:
+      - rabbitmq_network
+  
+  # Membuat order service
+  order:
+
+    # Menggunakan image order-service dari GitHub Packages
+    image: ghcr.io/yusufsugiono/order-service:latest
+    container_name: "order-service-submission"
+
+    # Memastikan bahwa service rabbitmq dibuat terlebih dahulu
+    depends_on:
+      - "rabbitmq"
+
+    # Mengekspos port yang akan digunakan
+    ports:
+      - 3000:3000
+
+    # Menjalankan command wait-fot-it untuk menunggu rabbitmq running terlebih dahulu
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- npm start'
+
+    # Mengatur environment yang akan digunakan
+    environment:
+      PORT: 3000
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+
+    # Network yang akan digunakan oleh container
+    networks:
+      - rabbitmq_network
+
+  # Membuat shipping service
+  shipping:
+
+    # Menggunakan image shipping-service yang ada pada GitHub Packages
+    image: ghcr.io/yusufsugiono/shipping-service:latest
+    container_name: "shipping-service-submission"
+
+    # Memastikan bahwa service rabbitmq dibuat terlebih dahulu
+    depends_on:
+      - "rabbitmq"
+
+    # Mengekspos port yang akan digunakan
+    ports:
+      - 3001:3001
+
+    # Menjalankan command wait-fot-it untuk menunggu rabbitmq running terlebih dahulu
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- npm start'
+
+    # Mengatur environment yang akan digunakan
+    environment:
+      PORT: 3001
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+
+    # Network yang akan digunakan oleh container
+    networks:
+      - rabbitmq_network
+
+networks:
+
+  # Membuat network rabbitmq_network
+  rabbitmq_network:
+    driver: bridge
